@@ -1,10 +1,27 @@
-# macpro-quickstart-serverless ![Build](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master) [![latest release](https://img.shields.io/github/release/cmsgov/macpro-quickstart-serverless.svg)](https://github.com/cmsgov/macpro-quickstart-serverless/releases/latest) [![Maintainability](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/maintainability)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/maintainability) [![CodeQL](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml/badge.svg?branch=master)](https://github.com/CMSgov/macpro-quickstart-serverless/actions/workflows/codeql-analysis.yml) [![Dependabot](https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot)](https://dependabot.com/) [![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier) [![Test Coverage](https://api.codeclimate.com/v1/badges/1449ad929006f559756b/test_coverage)](https://codeclimate.com/github/CMSgov/macpro-quickstart-serverless/test_coverage)
+<h1 align="center" style="border-bottom: none;"> carrier</h1>
+<h3 align="center">A cloud-native, serverless form submission application deployed to AWS with the Serverless Framework via GitHub Actions.</h3>
+<p align="center">
+  <a href="https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=master">
+    <img alt="Build" src="https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=master">
+  </a>
+  <a href="https://github.com/stratiformdigital/carrier/actions/workflows/codeql-analysis.yml">
+    <img alt="CodeQL" src="https://github.com/stratiformdigital/carrier/actions/workflows/codeql-analysis.yml/badge.svg?branch=main">
+  </a>
+  <a href="https://dependabot.com/">
+    <img alt="Dependabot" src="https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot">
+  </a>
+  <a href="https://codeclimate.com/repos/62ba4d05ce718301a400cbad/maintainability">
+    <img src="https://api.codeclimate.com/v1/badges/224d6a63e41ff1fca06f/maintainability" />
+  </a>
+  <a href="https://github.com/prettier/prettier">
+    <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square">
+  </a>
+</p>
+
 
 A serverless form submission application, built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). This QuickStart app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
 
-A service-specific README is located in each service folder (services/).
-
-Note: serverless-stack.com is different from serverless.com. This app does _not_ use serverless-stack.com.
+![Architecture Diagram](./.images/architecture.svg?raw=true)
 
 ## Pre-Requisites
 
@@ -141,7 +158,7 @@ Note: Parameters created in AWS Systems Manager (SSM) parameter store are not de
 
 ## Testing
 
-The Quickstart contains the following types of tests:
+Carrier contains the following types of tests:
 
 ### Unit tests
 
@@ -169,9 +186,9 @@ Our product is promoted through branches. A developer branch is merged to the ma
 
 | branch     | status                                                                                                             | release                                                                                                                                                                                                                                                   |
 | ---------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| master     | ![master](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=master)         | [![release to master](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare?quick_pull=1)                                                                                                   |
-| val        | ![val](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=val)               | [![release to val](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/val...master?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)                          |
-| production | ![production](https://github.com/CMSgov/macpro-quickstart-serverless/workflows/Deploy/badge.svg?branch=production) | [![release to production](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/CMSgov/macpro-quickstart-serverless/compare/production...val?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production) |
+| master     | ![master](https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=master)         | [![release to master](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/stratiformdigital/carrier/compare?quick_pull=1)                                                                                                   |
+| val        | ![val](https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=val)               | [![release to val](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/stratiformdigital/carrier/compare/val...master?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)                          |
+| production | ![production](https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=production) | [![release to production](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/stratiformdigital/carrier/compare/production...val?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production) |
 
 ## Setup Deployments for GitHub Actions
 
@@ -205,7 +222,7 @@ Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https
 
 ## How To Contribute
 
-See current open [issues](https://github.com/CMSgov/macpro-quickstart-serverless/issues) or check out the [project board](https://github.com/CMSgov/macpro-quickstart-serverless/projects/1).
+See current open [issues](https://github.com/stratiformdigital/carrier/issues) or check out the [project board](https://github.com/stratiformdigital/carrier/projects/1).
 
 Please feel free to open new issues for defects or enhancements.
 
@@ -254,15 +271,5 @@ SLACK_WEBHOOK CREATION (NEW Process):
    - If you are able to login to https://jira.cms.gov/servicedesk/customer/portal/1/create/11 you are good to go.
 2. One of the tools team member will create the Slack App and provide the webhook information back to ADO's.
 
-Please join the macpro-quickstart-serverless slack channel to get all build status and also contribute to any ongoing discussions.
+Please join the carrier slack channel to get all build status and also contribute to any ongoing discussions.
 Join here: https://join.slack.com/t/macproquickst-ugp3045/shared_invite/zt-mdxpbtkk-SrLRi_yzJrXX3uYgvrbjlg
-
-### Contributors
-
-| [![Mike Dial][dial_avatar]][dial_homepage]<br/>[Mike Dial][dial_homepage] | [![Seth Sacher][sacher_avatar]][sacher_homepage]<br/>[Seth Sacher][sacher_homepage] |
-| ------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
-
-[dial_homepage]: https://github.com/mdial89f
-[dial_avatar]: https://avatars.githubusercontent.com/mdial89f?size=150
-[sacher_homepage]: https://github.com/sethsacher
-[sacher_avatar]: https://avatars.githubusercontent.com/sethsacher?size=150

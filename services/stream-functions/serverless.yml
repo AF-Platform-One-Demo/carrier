@@ -34,7 +34,6 @@ custom:
       - production
   tableStreamArn: ${cf:database-${self:custom.stage}.AmendmentsTableStreamArn}
   sesSourceEmailAddress: ${ssm:/configuration/${self:custom.stage}/sesSourceEmailAddress, ssm:/configuration/default/sesSourceEmailAddress, "admin@example.com"}
-  reviewerEmailAddress: ${ssm:/configuration/${self:custom.stage}/reviewerEmailAddress, ssm:/configuration/default/reviewerEmailAddress, "reviewteam@example.com"}
   serverless-iam-roles-per-function:
     defaultInherit: true
 
@@ -56,26 +55,4 @@ functions:
           maximumRetryAttempts: 2
     environment:
       emailSource: ${self:custom.sesSourceEmailAddress}
-    maximumRetryAttempts: 2
-  emailReviewer:
-    handler: handlers/emailReviewer.handler
-    iamRoleStatements:
-      - Effect: "Allow"
-        Action:
-          - ses:SendEmail
-        Resource: "*"
-        Condition:
-          StringEquals:
-            ses:FromAddress: ${self:custom.sesSourceEmailAddress}
-          ForAllValues:StringLike:
-            ses:Recipients:
-              - ${self:custom.reviewerEmailAddress}
-    events:
-      - stream:
-          arn: ${self:custom.tableStreamArn}
-          startingPosition: LATEST
-          maximumRetryAttempts: 2
-    environment:
-      emailSource: ${self:custom.sesSourceEmailAddress}
-      reviewerEmail: ${self:custom.reviewerEmailAddress}
     maximumRetryAttempts: 2

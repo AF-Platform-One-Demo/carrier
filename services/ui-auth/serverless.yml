@@ -114,7 +114,7 @@ resources:
             - CreateEmailConfiguration
             - EmailSendingAccount: DEVELOPER
               SourceArn: !Sub arn:aws:ses:us-east-1:${AWS::AccountId}:identity/${self:custom.sesSourceEmailAddress}
-            - !Ref AWS::NoValue
+            - EmailSendingAccount: COGNITO_DEFAULT
         EmailVerificationSubject: "Please verify your email address"
         AccountRecoverySetting:
           RecoveryMechanisms:

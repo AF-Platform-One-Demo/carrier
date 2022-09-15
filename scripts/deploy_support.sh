@@ -16,7 +16,6 @@ set -e
 stage=${1:-dev}
 
 services=(
-  '.sechub'
 )
 
 install_deps() {
