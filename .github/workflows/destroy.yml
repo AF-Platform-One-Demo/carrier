@@ -2,11 +2,6 @@ name: Destroy
 
 on: delete
 
-permissions:
-  id-token: write
-  contents: read
-  actions: read
-
 concurrency:
   group: ${{ github.event.ref }}-group
 
@@ -23,6 +18,9 @@ jobs:
       name: ${{ github.event.ref }}
     env:
       branch_name: ${{ github.event.ref }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v2
       - run: ./scripts/destroy.sh $branch_name
