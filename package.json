@@ -12,14 +12,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/stratiformdigital/carrier.git"
+    "url": "git+https://github.com/AF-Platform-One-Demo/carrier.git"
   },
   "author": "",
   "license": "CC0-1.0",
   "bugs": {
-    "url": "https://github.com/stratiformdigital/carrier/issues"
+    "url": "https://github.com/AF-Platform-One-Demo/carrier/issues"
   },
-  "homepage": "https://github.com/stratiformdigital/carrier#readme",
+  "homepage": "https://github.com/AF-Platform-One-Demo/carrier#readme",
   "devDependencies": {
     "@types/dotenv": "^8.2.0",
     "@types/node": "^14.14.6",

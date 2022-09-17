@@ -1,11 +1,11 @@
 <h1 align="center" style="border-bottom: none;"> carrier</h1>
 <h3 align="center">A cloud-native, serverless form submission application deployed to AWS with the Serverless Framework via GitHub Actions.</h3>
 <p align="center">
-  <a href="https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=master">
-    <img alt="Build" src="https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=master">
+  <a href="https://github.com/AF-Platform-One-Demo/carrier/workflows/Deploy/badge.svg?branch=master">
+    <img alt="Build" src="https://github.com/AF-Platform-One-Demo/carrier/workflows/Deploy/badge.svg?branch=master">
   </a>
-  <a href="https://github.com/stratiformdigital/carrier/actions/workflows/codeql-analysis.yml">
-    <img alt="CodeQL" src="https://github.com/stratiformdigital/carrier/actions/workflows/codeql-analysis.yml/badge.svg?branch=main">
+  <a href="https://github.com/AF-Platform-One-Demo/carrier/actions/workflows/codeql-analysis.yml">
+    <img alt="CodeQL" src="https://github.com/AF-Platform-One-Demo/carrier/actions/workflows/codeql-analysis.yml/badge.svg">
   </a>
   <a href="https://dependabot.com/">
     <img alt="Dependabot" src="https://badgen.net/badge/Dependabot/enabled/green?icon=dependabot">
@@ -17,7 +17,6 @@
     <img alt="code style: prettier" src="https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square">
   </a>
 </p>
-
 
 A serverless form submission application, built and deployed to AWS with the [Serverless Application Framework](https://serverless.com). This QuickStart app provides a template for deploying your own QuickStart codebase. The [Architecture Diagram](./.images/architecture.svg?raw=true) shows the resources built by the QuickStart template in this repo.
 
@@ -184,11 +183,11 @@ Integration and accessibility tests are run automatically as part of the `deploy
 
 Our product is promoted through branches. A developer branch is merged to the master branch. The master branch is merged to val to affect a val release, and the val branch is merged to production to affect a production release. Please use the buttons below to promote/release code to higher environments.<br />
 
-| branch     | status                                                                                                             | release                                                                                                                                                                                                                                                   |
-| ---------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| master     | ![master](https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=master)         | [![release to master](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/stratiformdigital/carrier/compare?quick_pull=1)                                                                                                   |
-| val        | ![val](https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=val)               | [![release to val](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/stratiformdigital/carrier/compare/val...master?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)                          |
-| production | ![production](https://github.com/stratiformdigital/carrier/workflows/Deploy/badge.svg?branch=production) | [![release to production](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/stratiformdigital/carrier/compare/production...val?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production) |
+| branch     | status                                                                                                      | release                                                                                                                                                                                                                                            |
+| ---------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| master     | ![master](https://github.com/AF-Platform-One-Demo/carrier/workflows/Deploy/badge.svg?branch=master)         | [![release to master](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/AF-Platform-One-Demo/carrier/compare?quick_pull=1)                                                                                                   |
+| val        | ![val](https://github.com/AF-Platform-One-Demo/carrier/workflows/Deploy/badge.svg?branch=val)               | [![release to val](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/AF-Platform-One-Demo/carrier/compare/val...master?quick_pull=1&template=PULL_REQUEST_TEMPLATE.val.md&title=Release%20to%20Val)                          |
+| production | ![production](https://github.com/AF-Platform-One-Demo/carrier/workflows/Deploy/badge.svg?branch=production) | [![release to production](https://img.shields.io/badge/-Create%20PR-blue.svg)](https://github.com/AF-Platform-One-Demo/carrier/compare/production...val?quick_pull=1&template=PULL_REQUEST_TEMPLATE.production.md&title=Release%20to%20Production) |
 
 ## Setup Deployments for GitHub Actions
 
@@ -222,7 +221,7 @@ Deployments via GitHub Actions authenticate using [Open ID Connect (OIDC)](https
 
 ## How To Contribute
 
-See current open [issues](https://github.com/stratiformdigital/carrier/issues) or check out the [project board](https://github.com/stratiformdigital/carrier/projects/1).
+See current open [issues](https://github.com/AF-Platform-One-Demo/carrier/issues) or check out the [project board](https://github.com/AF-Platform-One-Demo/carrier/projects/1).
 
 Please feel free to open new issues for defects or enhancements.
 
