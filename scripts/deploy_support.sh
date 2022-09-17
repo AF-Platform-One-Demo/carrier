@@ -16,6 +16,7 @@ set -e
 stage=${1:-dev}
 
 services=(
+  .ecr
 )
 
 install_deps() {

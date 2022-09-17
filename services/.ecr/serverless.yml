@@ -1,0 +1,52 @@
+# Refer to this service's README to configure all required SSM parameters.
+service: ecr
+
+frameworkVersion: "3"
+
+package:
+  individually: true
+
+plugins:
+  - serverless-stack-termination-protection
+  - serverless-idempotency-helper
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
+
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  region: ${opt:region, self:provider.region}
+  serverlessTerminationProtection:
+    stages:
+      - master
+      - val
+      - production
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: us-east-1
+
+resources:
+  Resources:
+    ECRRepository:
+      Type: AWS::ECR::Repository
+      Properties:
+        EncryptionConfiguration:
+          EncryptionType: AES256
+        ImageScanningConfiguration:
+          ScanOnPush: true
+        ImageTagMutability: MUTABLE
+        RepositoryName: frontend
+        RepositoryPolicyText:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                AWS: !Sub arn:aws:iam::${AWS::AccountId}:root
+              Action: ecr:*
+
+  Outputs:
+    ECRRepository:
+      Value: !Ref ECRRepository
+    ECRRepositoryUri:
+      Value: !GetAtt ECRRepository.RepositoryUri
