@@ -1,5 +1,5 @@
 {
-  "name": "ui",
+  "name": "frontend",
   "description": "",
   "version": "1.0.0",
   "main": "index.js",
@@ -8,5 +8,8 @@
   },
   "author": "",
   "license": "CC0-1.0",
-  "devDependencies": {}
+  "devDependencies": {
+    "serverless-vpc-plugin": "^1.0.4"
+  },
+  "dependencies": {}
 }

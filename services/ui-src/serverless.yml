@@ -1,18 +1,22 @@
+# Refer to this service's README to configure all required SSM parameters.
 service: ui-src
 
 frameworkVersion: "3"
-
-plugins:
-  - serverless-plugin-scripts
-  - serverless-s3-sync
-  - serverless-cloudfront-invalidate
-  - serverless-stack-termination-protection
-  - serverless-s3-bucket-helper
 
 provider:
   name: aws
   runtime: nodejs14.x
   region: us-east-1
+  iam:
+    role:
+      path: ${ssm:/configuration/${self:custom.stage}/iam/path, ssm:/configuration/default/iam/path, "/"}
+      permissionsBoundary: ${ssm:/configuration/${self:custom.stage}/iam/permissionsBoundaryPolicy, ssm:/configuration/default/iam/permissionsBoundaryPolicy, ""}
+
+plugins:
+  - serverless-plugin-scripts
+  - serverless-stack-termination-protection
+  - serverless-iam-helper
+  - serverless-s3-bucket-helper
 
 custom:
   stage: ${opt:stage, self:provider.stage}
@@ -22,6 +26,13 @@ custom:
       - master
       - val
       - production
+  vpcId: ${cf:ui-${self:custom.stage}.VPCId}
+  appSubnet1: ${cf:ui-${self:custom.stage}.AppSubnet1}
+  appSubnet2: ${cf:ui-${self:custom.stage}.AppSubnet2}
+  appSubnet3: ${cf:ui-${self:custom.stage}.AppSubnet3}
+  balancerTargetGroup: ${cf:ui-${self:custom.stage}.BalancerTargetGroup}
+  balancerSecurityGroup: ${cf:ui-${self:custom.stage}.BalancerSecurityGroup}
+
   api_region: ${cf:app-api-${self:custom.stage}.Region}
   api_url: ${cf:app-api-${self:custom.stage}.ApiGatewayRestApiUrl}
   proxy_api_url: ${cf:proxy-api-${self:custom.stage}.ApiGatewayRestApiUrl}
@@ -32,37 +43,140 @@ custom:
   cognito_user_pool_client_domain: ${cf:ui-auth-${self:custom.stage}.UserPoolClientDomain}
   s3_attachments_bucket_region: ${cf:uploads-${self:custom.stage}.Region}
   s3_attachments_bucket_name: ${cf:uploads-${self:custom.stage}.AttachmentsBucketName}
-  ui_s3_bucket_name: ${cf:ui-${self:custom.stage}.S3BucketName}
-  ui_cloudfront_distribution_id: ${cf:ui-${self:custom.stage}.CloudFrontDistributionId}
   application_endpoint_url: ${cf:ui-${self:custom.stage}.ApplicationEndpointUrl}
   allow_admin_scope: ${cf:ui-auth-${self:custom.stage}.AllowAdminScope}
-  s3Sync:
-    - bucketName: ${self:custom.ui_s3_bucket_name}
-      localDir: ./build
-      deleteRemoved: true
-  cloudfrontInvalidate:
-    - distributionId: ${self:custom.ui_cloudfront_distribution_id}
-      items:
-        - "/*"
   scripts:
-    hooks:
-      # Build the static archive and populate the config
-      package:initialize: |
-        set -e
-        SKIP_PREFLIGHT_CHECK=true yarn run build
-        export API_REGION=${self:custom.api_region}
-        export API_URL=${self:custom.api_url}
-        export PROXY_API_URL=${self:custom.proxy_api_url}
-        export COGNITO_REGION=${self:custom.cognito_region}
-        export COGNITO_IDENTITY_POOL_ID=${self:custom.cognito_identity_pool_id}
-        export COGNITO_USER_POOL_ID=${self:custom.cognito_user_pool_id}
-        export COGNITO_USER_POOL_CLIENT_ID=${self:custom.cognito_user_pool_client_id}
-        export COGNITO_USER_POOL_CLIENT_DOMAIN=${self:custom.cognito_user_pool_client_domain}
-        export COGNITO_REDIRECT_SIGNIN=${self:custom.application_endpoint_url}
-        export COGNITO_REDIRECT_SIGNOUT=${self:custom.application_endpoint_url}
-        export S3_ATTACHMENTS_BUCKET_REGION=${self:custom.s3_attachments_bucket_region}
-        export S3_ATTACHMENTS_BUCKET_NAME=${self:custom.s3_attachments_bucket_name}
-        export LOCAL_LOGIN=false
-        export ALLOW_ADMIN_SCOPE=${self:custom.allow_admin_scope}
-        ./env.sh
-        cp public/env-config.js build/env-config.js
+    commands:
+      connect: |
+        runningTasks=(`aws --region ${self:provider.region} ecs list-tasks --cluster ${self:service}-${self:custom.stage} --desired-status RUNNING | jq -r ".taskArns[]"`)
+        echo "\nThe following command(s) may be used to exec onto running fargate tasks.  Note, if there are no commands shown, there are no runnings tasks:"
+        for task in "${runningTasks[@]}"
+        do
+          echo aws --region ${self:provider.region} ecs execute-command --cluster ${self:service}-${self:custom.stage} --task ${task##*/} --container nginx --interactive --command "/bin/sh"
+        done
+
+resources:
+  Resources:
+    # --------------------------------------------------------------------------
+    # Create an ECS service for nginx, to serve the frontend.
+    # --------------------------------------------------------------------------
+    ECSCluster:
+      Type: AWS::ECS::Cluster
+      Properties:
+        ClusterName: ${self:service}-${self:custom.stage}
+    ECSService:
+      Type: AWS::ECS::Service
+      Properties:
+        Cluster: !Sub ${ECSCluster}
+        DeploymentConfiguration:
+          MaximumPercent: 150
+          MinimumHealthyPercent: 50
+        DesiredCount: 4
+        LoadBalancers:
+          - TargetGroupArn: ${self:custom.balancerTargetGroup}
+            ContainerPort: 80
+            ContainerName: nginx
+        EnableExecuteCommand: true
+        LaunchType: FARGATE
+        NetworkConfiguration:
+          AwsvpcConfiguration:
+            SecurityGroups:
+              - !Sub ${ECSSecurityGroup}
+            Subnets:
+              - ${self:custom.appSubnet1}
+              - ${self:custom.appSubnet2}
+              - ${self:custom.appSubnet3}
+        ServiceName: nginx
+        TaskDefinition: !Sub ${ECSTaskDefinition}
+    ECSTaskDefinition:
+      Type: AWS::ECS::TaskDefinition
+      Properties:
+        ContainerDefinitions:
+          - Name: nginx
+            Image: ${env:frontend_image}
+            Memory: 2048
+            Cpu: 1024
+            Environment:
+              - Name: API_REGION
+                Value: ${self:custom.api_region}
+              - Name: API_URL
+                Value: ${self:custom.api_url}
+              - Name: PROXY_API_URL
+                Value: ${self:custom.proxy_api_url}
+              - Name: COGNITO_REGION
+                Value: ${self:custom.cognito_region}
+              - Name: COGNITO_IDENTITY_POOL_ID
+                Value: ${self:custom.cognito_identity_pool_id}
+              - Name: COGNITO_USER_POOL_ID
+                Value: ${self:custom.cognito_user_pool_id}
+              - Name: COGNITO_USER_POOL_CLIENT_ID
+                Value: ${self:custom.cognito_user_pool_client_id}
+              - Name: COGNITO_USER_POOL_CLIENT_DOMAIN
+                Value: ${self:custom.cognito_user_pool_client_domain}
+              - Name: COGNITO_REDIRECT_SIGNIN
+                Value: ${self:custom.application_endpoint_url}
+              - Name: COGNITO_REDIRECT_SIGNOUT
+                Value: ${self:custom.application_endpoint_url}
+              - Name: S3_ATTACHMENTS_BUCKET_REGION
+                Value: ${self:custom.s3_attachments_bucket_region}
+              - Name: S3_ATTACHMENTS_BUCKET_NAME
+                Value: ${self:custom.s3_attachments_bucket_name}
+              - Name: LOCAL_LOGIN
+                Value: false
+              - Name: ALLOW_ADMIN_SCOPE
+                Value: ${self:custom.allow_admin_scope}
+            PortMappings:
+              - containerPort: 80
+            LogConfiguration:
+              LogDriver: awslogs
+              Options:
+                awslogs-group: !Sub ${ECSLogGroup}
+                awslogs-region: !Sub ${AWS::Region}
+                awslogs-stream-prefix: fargate
+        Family: ${self:service}-${self:custom.stage}-nginx
+        NetworkMode: awsvpc
+        ExecutionRoleArn: !GetAtt ECSRole.Arn
+        TaskRoleArn: !GetAtt ECSRole.Arn
+        RequiresCompatibilities:
+          - FARGATE
+        Memory: 2GB
+        Cpu: 1024
+    ECSLogGroup:
+      Type: AWS::Logs::LogGroup
+      Properties:
+        LogGroupName: /aws/fargate/${self:service}-${self:custom.stage}-nginx
+    ECSSecurityGroup:
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+        GroupDescription: Security group for ${self:service}-${self:custom.stage} nginx service.
+        VpcId: ${self:custom.vpcId}
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            SourceSecurityGroupId: ${self:custom.balancerSecurityGroup}
+            FromPort: 80
+            ToPort: 80
+    ECSRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - ecs.amazonaws.com
+                  - ecs-tasks.amazonaws.com
+              Action: sts:AssumeRole
+        ManagedPolicyArns:
+          - arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy
+        Policies:
+          - PolicyName: ${self:service}-${self:custom.stage}-nginx
+            PolicyDocument:
+              Version: "2012-10-17"
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "*"
+                  Resource:
+                    - "*"
+    # --------------------------------------------------------------------------
