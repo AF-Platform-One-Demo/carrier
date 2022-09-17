@@ -166,7 +166,7 @@ jobs:
       - name: deploy
         id: deploy
         run: |
-          export frontend_image=${{ needs.build.outputs.frontend_image }}
+          export frontend_image=${{ needs.build-images.outputs.frontend_image }}
           ./scripts/deploy.sh $branch_name
           pushd services
           export APPLICATION_ENDPOINT=`./output.sh ui ApplicationEndpointUrl $branch_name`
