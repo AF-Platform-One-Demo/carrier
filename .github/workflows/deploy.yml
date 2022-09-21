@@ -142,7 +142,7 @@ jobs:
           fail_threshold: high
   deploy:
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - build-images
       - scan-images
     environment:
